@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Kotobara 3D: Survive 5 Minutes</title>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1,minimal-ui=true,viewport-fit=cover"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="renderer" content="webkit"/>
+    <meta name="force-rendering" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="full-screen" content="yes"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="360-fullscreen" content="true"/>
+    <meta name="x5-page-mode" content="app">
+    <link rel="stylesheet" type="text/css" href="style.f76d1.css"/>
+    
+    <style>
+        /* Базовые стили: убираем скроллы и делаем фон в цвет загрузки */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            overscroll-behavior: none;
+            background: #161623; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: none;
+        }
+
+        #GameDiv, #Cocos3dGameContainer, #GameCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            touch-action: none;
+            outline: none;
+        }
+
+        /* =========================================================
+           ОВЕРЛЕЙ ПОВОРОТА ЭКРАНА (ВКЛЮЧАЕТСЯ В ВЕРТИКАЛЬНОМ РЕЖИМЕ)
+           ========================================================= */
+        #orientation-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background-color: #161623;
+            z-index: 9999999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        @media screen and (orientation: portrait) {
+            #orientation-overlay {
+                display: flex;
+            }
+        }
+
+        @keyframes rotateMobilePhone {
+            0% { transform: rotate(0deg); }
+            30% { transform: rotate(-90deg); }
+            70% { transform: rotate(-90deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        .vector-phone-icon {
+            width: 100px;
+            height: 100px;
+            animation: rotateMobilePhone 2.5s ease-in-out infinite;
+        }
+        
+        .rotate-text {
+            color: #ffffff;
+            margin-top: 24px;
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        /* =========================================================
+           ЭКРАН ЗАГРУЗКИ (SPLASH)
+           ========================================================= */
+        #custom-splash {
+            position: fixed;
+            inset: 0;
+            background-color: #161623;
+            z-index: 999999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        @keyframes iconPulse {
+            0% { transform: scale(1); filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.4)); }
+            50% { transform: scale(1.06); filter: drop-shadow(0 8px 22px rgba(108, 92, 231, 0.4)); }
+            100% { transform: scale(1); filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.4)); }
+        }
+
+        .splash-icon {
+            width: 90px;
+            height: 90px;
+            border-radius: 20px;
+            object-fit: cover;
+            animation: iconPulse 1.8s infinite ease-in-out;
+            margin-bottom: 22px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .splash-progress-track {
+            width: 210px;
+            height: 5px;
+            background-color: rgba(255, 255, 255, 0.12);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .splash-progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #6c5ce7, #00d26a);
+            border-radius: 4px;
+            transition: width 0.15s ease-out;
+        }
+
+        .splash-percent {
+            color: #9290a4;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .splash-subtext {
+            color: #5d5c6f;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .splash-hidden {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Оверлей поворота устройства -->
+    <div id="orientation-overlay">
+        <svg class="vector-phone-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="2" width="12" height="20" rx="2" stroke="#ffffff" stroke-width="1.5"/>
+            <circle cx="12" cy="19" r="0.75" fill="#ffffff"/>
+            <path d="M4 16C2.5 13.5 2.5 10.5 4 8" stroke="#6c5ce7" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M20 8C21.5 10.5 21.5 13.5 20 16" stroke="#6c5ce7" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M2 10L4 8L6 10" stroke="#6c5ce7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M22 14L20 16L18 14" stroke="#6c5ce7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </div>
+
+    <!-- Экран загрузки -->
+    <div id="custom-splash">
+        <img class="splash-icon" src="index.0e01f.png" alt="Kotobara 3D">
+        <div class="splash-progress-track">
+            <div class="splash-progress-fill" id="splashFill"></div>
+        </div>
+        <div class="splash-percent" id="splashPercent">0%</div>
+        <div class="splash-subtext">Загрузка</div>
+    </div>
+
+    <!-- Контейнер игры Cocos -->
+    <div id="GameDiv" cc_exact_fit_screen="true">
+        <div id="Cocos3dGameContainer">
+            <canvas id="GameCanvas" oncontextmenu="event.preventDefault()" tabindex="0"></canvas>
+        </div>
+    </div>
+
+    <script src="src/polyfills.bundle.5adbf.js" charset="utf-8"></script>
+    <script src="src/system.bundle.543e6.js" charset="utf-8"></script>
+    <script src="src/import-map.7f799.json" type="systemjs-importmap" charset="utf-8"></script>
+
+    <script>
+        /* =========================================================
+           ЛОГИКА ЗАГРУЗКИ И ПРЕДОТВРАЩЕНИЯ ЧЕРНОГО ЭКРАНА
+           ========================================================= */
+        let currentProgress = 0;
+        let isGameReady = false;
+        const fillBar = document.getElementById('splashFill');
+        const percentText = document.getElementById('splashPercent');
+        const splashScreen = document.getElementById('custom-splash');
+
+        function updateProgress(value) {
+            currentProgress = Math.min(value, 100);
+            fillBar.style.width = currentProgress + '%';
+            percentText.textContent = Math.round(currentProgress) + '%';
+        }
+
+        // Плавный "фейковый" прогресс, который замедляется к концу
+        const progressTimer = setInterval(() => {
+            if (!isGameReady) {
+                if (currentProgress < 70) {
+                    updateProgress(currentProgress + 2.5);
+                } else if (currentProgress < 95) {
+                    updateProgress(currentProgress + 0.5); // Замедляемся, чтобы не дойти до 100% раньше времени
+                }
+            }
+        }, 100);
+
+        function finishAndHideSplash() {
+            if (isGameReady) return;
+            isGameReady = true;
+            clearInterval(progressTimer);
+            clearInterval(cocosWatcher);
+            
+            updateProgress(100);
+            
+            // ВАЖНО: Ждем 800мс перед скрытием сплеша.
+            // Это дает время движку Cocos (WebGL) фактически отрисовать первый кадр на canvas.
+            // Благодаря этому пользователь не увидит черный экран между скрытием HTML и появлением игры.
+            setTimeout(() => {
+                splashScreen.classList.add('splash-hidden');
+                // Удаляем сплеш из DOM через полсекунды, чтобы он не перехватывал клики по игре
+                setTimeout(() => {
+                    if (splashScreen.parentNode) {
+                        splashScreen.parentNode.removeChild(splashScreen);
+                    }
+                }, 500);
+            }, 800);
+        }
+
+        // Отслеживание инициализации Cocos Director
+        const cocosWatcher = setInterval(() => {
+            if (window.cc && window.cc.director) {
+                const director = window.cc.director;
+                const scene = director.getScene && director.getScene();
+                
+                // Если сцена загружена и в ней есть объекты
+                if (scene && scene.children && scene.children.length > 0) {
+                    finishAndHideSplash();
+                    return;
+                }
+                
+                // Слушатель события запуска сцены
+                if (director.once) {
+                    director.once('after-scene-launch', finishAndHideSplash);
+                }
+            }
+        }, 50);
+
+        // Страховка на случай очень медленного интернета (максимум 15 секунд)
+        setTimeout(finishAndHideSplash, 15000);
+
+        // Запуск игры
+        System.import('./index.24c45.js').catch(function(err) {
+            console.error("Ошибка загрузки игры:", err);
+        });
+
+        /* =========================================================
+           iOS/ANDROID TOUCH FIX И ЗАЩИТА CANVAS
+           ========================================================= */
+        (function () {
+            const canvas = document.getElementById('GameCanvas');
+            if (!canvas) return;
+
+            // Запрет iOS-жестов масштабирования (pinch-zoom)
+            document.addEventListener('gesturestart', e => e.preventDefault(), { passive: false });
+            document.addEventListener('gesturechange', e => e.preventDefault(), { passive: false });
+            document.addEventListener('gestureend', e => e.preventDefault(), { passive: false });
+
+            // Запрет double-tap zoom
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function (e) {
+                const now = Date.now();
+                if (now - lastTouchEnd <= 350) e.preventDefault();
+                lastTouchEnd = now;
+            }, { passive: false });
+
+            // Запрет pinch через touchmove
+            document.addEventListener('touchmove', function (e) {
+                if (e.touches.length > 1 || (e.scale && e.scale !== 1)) e.preventDefault();
+            }, { passive: false });
+
+            // Возврат фокуса canvas при касании (нужно для обработки клавиатуры и свайпов)
+            document.addEventListener('pointerdown', function (e) {
+                if (e.target && e.target.tagName === 'CANVAS') {
+                    try { e.target.focus(); } catch (_) {}
+                }
+            }, { passive: true });
+            
+            document.addEventListener('touchstart', function (e) {
+                if (e.target && e.target.tagName === 'CANVAS') {
+                    try { e.target.focus(); } catch (_) {}
+                }
+            }, { passive: true });
+
+            // Защита от выделения текста
+            document.addEventListener('selectstart', function (e) {
+                if (e.target && e.target.tagName === 'CANVAS') e.preventDefault();
+            });
+        })();
+    </script>
+</body>
+</html>
