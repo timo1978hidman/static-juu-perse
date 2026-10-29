@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vepsian Game Designer</title>
+
+<!-- Предзагрузка шрифта, чтобы он быстрее применился -->
+<link rel="preload" href="fonts/Rubik-Bold.ttf" as="font" type="font/ttf" crossorigin>
+
+<style>
+/* =========================================================
+   ПОДКЛЮЧЕНИЕ ЛОКАЛЬНОГО ШРИФТА RUBIK
+   ========================================================= */
+@font-face {
+    font-family: 'Rubik';
+    src: url('fonts/Rubik-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/*
+Если добавишь обычный шрифт Rubik-Regular.ttf, раскомментируй этот блок:
+
+@font-face {
+    font-family: 'Rubik';
+    src: url('fonts/Rubik-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+*/
+
+:root {
+    --font-main: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    --bg-main: #121316;
+    --bg-panel: #181a20;
+    --bg-dark: #0f1013;
+    --border-main: #282a34;
+    --border-light: #363a49;
+    --text-main: #e6e8ec;
+    --text-muted: #8c91a4;
+    --text-dim: #7b8092;
+    --accent: #e0a96d;
+    --green: #00d26a;
+    --green-hover: #00f07c;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+
+    /* Главный шрифт сайта */
+    font-family: var(--font-main);
+
+    /*
+    Сейчас подключен только Rubik-Bold.ttf, поэтому весь сайт будет жирным.
+    Если позже добавишь Rubik-Regular.ttf, замени 700 на 400.
+    */
+    font-weight: 700;
+
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+button {
+    font-family: inherit;
+}
+
+/* =========================================================
+   ШАПКА
+   ========================================================= */
+.header {
+    background-color: var(--bg-panel);
+    border-bottom: 1px solid var(--border-main);
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+}
+
+.logo-img {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    object-fit: cover;
+    background-color: #232631;
+    border: 1px solid var(--border-light);
+    display: block;
+}
+
+.site-title {
+    font-family: var(--font-main);
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-shadow: 0 2px 8px rgba(224, 169, 109, 0.25);
+}
+
+.lang-switcher {
+    display: flex;
+    gap: 4px;
+    background-color: var(--bg-dark);
+    padding: 4px;
+    border-radius: 12px;
+    border: 1px solid var(--border-main);
+}
+
+.lang-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    font-family: var(--font-main);
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.lang-btn:hover {
+    color: #ffffff;
+}
+
+.lang-btn.active {
+    background-color: #2b3142;
+    color: var(--accent);
+}
+
+/* =========================================================
+   ВИТРИНА
+   ========================================================= */
+.main-container {
+    max-width: 1100px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 36px 20px;
+    flex-grow: 1;
+}
+
+.section-title {
+    font-family: var(--font-main);
+    font-size: 1.2rem;
+    margin-bottom: 24px;
+    color: var(--text-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 24px;
+}
+
+.card {
+    background-color: var(--bg-panel);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border-main);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    border-color: #404558;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+}
+
+.banner-container {
+    position: relative;
+    width: 100%;
+    height: 190px;
+    background-color: #21242d;
+    overflow: hidden;
+}
+
+.banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.card-body {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.game-name {
+    font-family: var(--font-main);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.3;
+}
+
+.play-button {
+    display: block;
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    background: var(--green);
+    color: #04140b;
+    font-family: var(--font-main);
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.play-button:hover {
+    background: var(--green-hover);
+    transform: scale(1.01);
+}
+
+/* =========================================================
+   ЗАГЛУШКИ
+   ========================================================= */
+.card-placeholder {
+    background-color: #14161b;
+    border: 1px dashed #282a35;
+    opacity: 0.6;
+}
+
+.placeholder-banner {
+    background-color: #17181f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 190px;
+}
+
+.placeholder-status {
+    font-family: var(--font-main);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #63687c;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 8px 18px;
+    border: 1px solid #282a35;
+    border-radius: 20px;
+    background: #0f1014;
+}
+
+.footer {
+    text-align: center;
+    padding: 24px 20px;
+    color: #525666;
+    font-family: var(--font-main);
+    font-size: 0.85rem;
+    border-top: 1px solid #1a1c22;
+    margin-top: auto;
+}
+
+/* =========================================================
+   МОДАЛЬНОЕ ОКНО ДЛЯ ИГРЫ
+   ========================================================= */
+.game-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(8, 9, 12, 0.94);
+    z-index: 9999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.game-modal.active {
+    display: flex;
+}
+
+.game-modal-container {
+    width: 100%;
+    max-width: 1280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.game-modal-bar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.modal-game-title {
+    font-family: var(--font-main);
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 1.1rem;
+}
+
+.modal-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.ctrl-btn {
+    background: #232632;
+    border: 1px solid #363b4d;
+    color: #e0e0e0;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-family: var(--font-main);
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.ctrl-btn:hover {
+    background: #313646;
+    color: #ffffff;
+}
+
+.close-btn:hover {
+    background: #e74c3c;
+    border-color: #e74c3c;
+}
+
+.game-frame-wrapper {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-height: 82vh;
+    background-color: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border-main);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+}
+
+.game-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .game-modal {
+        padding: 8px;
+    }
+
+    .game-frame-wrapper {
+        max-height: 85vh;
+        border-radius: 8px;
+    }
+
+    .modal-game-title {
+        font-size: 0.9rem;
+    }
+
+    .site-title {
+        font-size: 1.15rem;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="brand">
+        <img class="logo-img" src="images/logo.png" alt="Logo" onerror="this.style.display='none'">
+        <span class="site-title" data-i18n="site_title">Vepsian Game Designer</span>
+    </div>
+
+    <div class="lang-switcher">
+        <button class="lang-btn active" id="btn-en" onclick="changeLanguage('en')">EN</button>
+        <button class="lang-btn" id="btn-ru" onclick="changeLanguage('ru')">RU</button>
+    </div>
+</header>
+
+<main class="main-container">
+    <h2 class="section-title" data-i18n="section_title">Games</h2>
+
+    <div class="games-grid">
+
+        <!-- 1. КОТОБАРА 3D -->
+        <div class="card">
+            <div class="banner-container">
+                <img class="banner-img" src="images/game1.jpg" alt="Kotobara 3D">
+            </div>
+
+            <div class="card-body">
+                <div class="game-name" data-i18n="game_1_title">Kotobara 3D: Survive 5 Minutes</div>
+                <button class="play-button" onclick="openGame('games/game1/index.html')" data-i18n="play_btn">Play Now</button>
+            </div>
+        </div>
+
+        <!-- 2. СЕРАЯ ЗАГЛУШКА -->
+        <div class="card card-placeholder">
+            <div class="placeholder-banner">
+                <span class="placeholder-status" data-i18n="coming_soon">Coming Soon</span>
+            </div>
+        </div>
+
+        <!-- 3. СЕРАЯ ЗАГЛУШКА -->
+        <div class="card card-placeholder">
+            <div class="placeholder-banner">
+                <span class="placeholder-status" data-i18n="coming_soon">Coming Soon</span>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<footer class="footer">
+    <p>
+        © 2025 <span data-i18n="site_title">Vepsian Game Designer</span>.
+        <span data-i18n="footer_rights">All rights reserved.</span>
+    </p>
+</footer>
+
+<!-- ИГРОВОЙ ЭКРАН -->
+<div id="gameModal" class="game-modal">
+    <div class="game-modal-container">
+        <div class="game-modal-bar">
+            <span class="modal-game-title" data-i18n="game_1_title">Kotobara 3D: Survive 5 Minutes</span>
+
+            <div class="modal-controls">
+                <button class="ctrl-btn" onclick="toggleFullscreen()">
+                    ⛶ <span data-i18n="fullscreen_btn">Fullscreen</span>
+                </button>
+
+                <button class="ctrl-btn close-btn" onclick="closeGame()" data-i18n="close_btn">
+                    ✕ Close
+                </button>
+            </div>
+        </div>
+
+        <div class="game-frame-wrapper" id="gameWrapper">
+            <iframe id="gameIframe" class="game-frame" src="" allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+
+<script>
+const translations = {
+    en: {
+        site_title: "Vepsian Game Designer",
+        section_title: "Games",
+        game_1_title: "Kotobara 3D: Survive 5 Minutes",
+        play_btn: "Play Now",
+        coming_soon: "Coming Soon",
+        footer_rights: "All rights reserved.",
+        close_btn: "✕ Close",
+        fullscreen_btn: "Fullscreen"
+    },
+    ru: {
+        site_title: "Вепсский Геймдизайнер",
+        section_title: "Игры",
+        game_1_title: "КотоБара 3Д: Выживи 5 минут",
+        play_btn: "Играть",
+        coming_soon: "Скоро выйдет",
+        footer_rights: "Все права защищены.",
+        close_btn: "✕ Закрыть",
+        fullscreen_btn: "На весь экран"
+    }
+};
+
+function changeLanguage(lang) {
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+
+        if (translations[lang] && translations[lang][key]) {
+            element.textContent = translations[lang][key];
+        }
+    });
+
+    document.getElementById('btn-en').classList.remove('active');
+    document.getElementById('btn-ru').classList.remove('active');
+    document.getElementById('btn-' + lang).classList.add('active');
+
+    document.documentElement.lang = lang;
+    localStorage.setItem('preferred_lang', lang);
+}
+
+function openGame(gameUrl) {
+    document.getElementById('gameIframe').src = gameUrl;
+    document.getElementById('gameModal').classList.add('active');
+}
+
+function closeGame() {
+    document.getElementById('gameModal').classList.remove('active');
+    document.getElementById('gameIframe').src = "";
+
+    if (document.fullscreenElement) {
+        document.exitFullscreen();
+    }
+}
+
+function toggleFullscreen() {
+    const wrapper = document.getElementById('gameWrapper');
+
+    if (!document.fullscreenElement) {
+        wrapper.requestFullscreen().catch(err => alert("Error: " + err.message));
+    } else {
+        document.exitFullscreen();
+    }
+}
+
+const currentLang = localStorage.getItem('preferred_lang') || 'en';
+changeLanguage(currentLang);
+</script>
+
+</body>
+</html>
