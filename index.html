@@ -7,7 +7,7 @@
 
 <!-- Подключение логотипа на вкладке браузера (Фавиконка) -->
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-   
+
 <!-- Предзагрузка шрифта, чтобы он быстрее применился -->
 <link rel="preload" href="fonts/Rubik-Bold.ttf" as="font" type="font/ttf" crossorigin>
 
@@ -215,6 +215,29 @@ button {
     height: 100%;
     object-fit: cover;
     display: block;
+    transition: transform 0.45s ease;
+}
+
+/* Лёгкое приближение баннера при наведении на карточку */
+.card:hover .banner-img {
+    transform: scale(1.05);
+}
+
+/* Плашка "НОВИНКА" на баннере свежей игры */
+.badge-new {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+    background: var(--accent);
+    color: #26160a;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
 }
 
 .card-body {
@@ -265,6 +288,12 @@ button {
     background-color: #14161b;
     border: 1px dashed #282a35;
     opacity: 0.6;
+}
+
+.card-placeholder:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: #282a35;
 }
 
 .placeholder-banner {
@@ -440,14 +469,20 @@ button {
 
             <div class="card-body">
                 <div class="game-name" data-i18n="game_1_title">Kotobara 3D: Survive 5 Minutes</div>
-                <button class="play-button" onclick="openGame('games/game1/index.html')" data-i18n="play_btn">Play Now</button>
+                <button class="play-button" onclick="openGame('games/game1/index.html', 'game_1_title')" data-i18n="play_btn">Play Now</button>
             </div>
         </div>
 
-        <!-- 2. СЕРАЯ ЗАГЛУШКА -->
-        <div class="card card-placeholder">
-            <div class="placeholder-banner">
-                <span class="placeholder-status" data-i18n="coming_soon">Coming Soon</span>
+        <!-- 2. КАРЕЛЬСКАЯ БАНЯ -->
+        <div class="card">
+            <div class="banner-container">
+                <span class="badge-new" data-i18n="new_badge">NEW</span>
+                <img class="banner-img" src="images/game2.jpg" alt="Karelian Bath">
+            </div>
+
+            <div class="card-body">
+                <div class="game-name" data-i18n="game_2_title">Karelian Bath</div>
+                <button class="play-button" onclick="openGame('games/game2/index.html', 'game_2_title')" data-i18n="play_btn">Play Now</button>
             </div>
         </div>
 
@@ -472,7 +507,7 @@ button {
 <div id="gameModal" class="game-modal">
     <div class="game-modal-container">
         <div class="game-modal-bar">
-            <span class="modal-game-title" data-i18n="game_1_title">Kotobara 3D: Survive 5 Minutes</span>
+            <span id="modalGameTitle" class="modal-game-title" data-i18n="game_1_title">Kotobara 3D: Survive 5 Minutes</span>
 
             <div class="modal-controls">
                 <button class="ctrl-btn" onclick="toggleFullscreen()">
@@ -497,6 +532,8 @@ const translations = {
         site_title: "Vepsian Game Designer",
         section_title: "Games",
         game_1_title: "Kotobara 3D: Survive 5 Minutes",
+        game_2_title: "Karelian Bath",
+        new_badge: "NEW",
         play_btn: "Play Now",
         coming_soon: "Coming Soon",
         footer_rights: "All rights reserved.",
@@ -507,6 +544,8 @@ const translations = {
         site_title: "Вепсский Геймдизайнер",
         section_title: "Игры",
         game_1_title: "КотоБара 3Д: Выживи 5 минут",
+        game_2_title: "Карельская Баня",
+        new_badge: "НОВИНКА",
         play_btn: "Играть",
         coming_soon: "Скоро выйдет",
         footer_rights: "Все права защищены.",
@@ -515,7 +554,11 @@ const translations = {
     }
 };
 
+let currentLang = localStorage.getItem('preferred_lang') || 'en';
+
 function changeLanguage(lang) {
+    currentLang = lang;
+
     document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
 
@@ -532,14 +575,23 @@ function changeLanguage(lang) {
     localStorage.setItem('preferred_lang', lang);
 }
 
-function openGame(gameUrl) {
+// Теперь функция принимает и ссылку на игру, и ключ её названия
+function openGame(gameUrl, titleKey) {
+    const titleEl = document.getElementById('modalGameTitle');
+    titleEl.setAttribute('data-i18n', titleKey);
+    titleEl.textContent = translations[currentLang][titleKey];
+
     document.getElementById('gameIframe').src = gameUrl;
     document.getElementById('gameModal').classList.add('active');
+
+    // Блокируем прокрутку страницы под модалкой
+    document.body.style.overflow = 'hidden';
 }
 
 function closeGame() {
     document.getElementById('gameModal').classList.remove('active');
     document.getElementById('gameIframe').src = "";
+    document.body.style.overflow = '';
 
     if (document.fullscreenElement) {
         document.exitFullscreen();
@@ -556,7 +608,13 @@ function toggleFullscreen() {
     }
 }
 
-const currentLang = localStorage.getItem('preferred_lang') || 'en';
+// Закрытие игры по клавише Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.getElementById('gameModal').classList.contains('active')) {
+        closeGame();
+    }
+});
+
 changeLanguage(currentLang);
 </script>
 
