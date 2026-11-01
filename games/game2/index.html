@@ -241,34 +241,46 @@
     // Ждём инициализации Cocos Creator
     function waitForCocos() {
         if (window.cc && window.cc.game) {
-            // Если уже инициализирован
+            // Страховка №1: Если сцена запустилась, убираем сплэш чуть быстрее
             if (window.cc.game._inited) {
-                // Ждём запуска сцены
                 if (window.cc.director) {
                     window.cc.director.once(window.cc.director.EVENT_AFTER_SCENE_LAUNCH, () => {
-                        setTimeout(finishLoading, 100); // Даём 100мс на первый рендер
+                        setTimeout(finishLoading, 30); // Снизили задержку со 100мс до 30мс
                     });
                 } else {
                     finishLoading();
                 }
-                return;
             }
             
-            // Подписываемся на инициализацию
             if (window.cc.game.EVENT_GAME_INITED) {
                 window.cc.game.once(window.cc.game.EVENT_GAME_INITED, () => {
-                    // После инициализации ждём запуска сцены
                     if (window.cc.director) {
                         window.cc.director.once(window.cc.director.EVENT_AFTER_SCENE_LAUNCH, () => {
-                            setTimeout(finishLoading, 100); // Даём 100мс на первый рендер
+                            setTimeout(finishLoading, 30);
                         });
                     } else {
-                        setTimeout(finishLoading, 200);
+                        setTimeout(finishLoading, 50);
                     }
                 });
             }
+
+            // Главное решение: ловим реальный рендер кадра на Canvas движка
+            const canvas = document.getElementById('GameCanvas');
+            if (canvas) {
+                const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+                if (gl) {
+                    // Перехватываем момент отрисовки кадра
+                    const originalDraw = gl.drawElements || gl.drawArrays;
+                    const checkRender = () => {
+                        // Музыка уже играет, и если пошел рендер элементов — игра 100% на экране
+                        finishLoading(); 
+                        if (gl.drawElements) gl.drawElements = originalDraw;
+                    };
+                    if (gl.drawElements) gl.drawElements = function() { checkRender(); originalDraw.apply(this, arguments); };
+                }
+            }
         } else {
-            setTimeout(waitForCocos, 50);
+            setTimeout(waitForCocos, 30);
         }
     }
     waitForCocos();
