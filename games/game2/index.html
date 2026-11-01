@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#E8DCC4">
+    <meta name="theme-color" content="#d4a67b">
     <meta name="format-detection" content="telephone=no">
     <meta name="renderer" content="webkit"/>
     <meta name="force-rendering" content="webkit"/>
@@ -17,11 +17,11 @@
     <meta name="x5-fullscreen" content="true"/>
     <meta name="360-fullscreen" content="true"/>
     <meta name="x5-page-mode" content="app">
-    <link rel="stylesheet" type="text/css" href="style.f76d1.css"/>
+    <link rel="stylesheet" type="text/css" href="style.css"/>
     
     <style>
         /* =========================================================
-           БАЗОВЫЕ СТИЛИ: КРАФТОВАЯ БУМАГА
+           БАЗОВЫЕ СТИЛИ: КРАФТОВАЯ БУМАГА (ТЕМНЕЕ)
            ========================================================= */
         html, body {
             margin: 0;
@@ -30,7 +30,7 @@
             height: 100%;
             overflow: hidden;
             overscroll-behavior: none;
-            background: #E8DCC4; /* Охристый / крафтовая бумага */
+            background: #d4a67b;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
             -webkit-user-select: none;
@@ -53,7 +53,7 @@
             display: none;
             position: fixed;
             inset: 0;
-            background-color: #E8DCC4;
+            background-color: #d4a67b;
             z-index: 9999999;
             justify-content: center;
             align-items: center;
@@ -80,7 +80,7 @@
         }
         
         .rotate-text {
-            color: #5D4037;
+            color: #3E2723;
             margin-top: 24px;
             font-size: 16px;
             font-weight: 600;
@@ -95,7 +95,7 @@
         #custom-splash {
             position: fixed;
             inset: 0;
-            background-color: #E8DCC4;
+            background-color: #d4a67b;
             z-index: 999999;
             display: flex;
             flex-direction: column;
@@ -105,9 +105,9 @@
         }
 
         @keyframes iconPulse {
-            0% { transform: scale(1); filter: drop-shadow(0 4px 14px rgba(62, 39, 35, 0.2)); }
-            50% { transform: scale(1.06); filter: drop-shadow(0 8px 22px rgba(62, 39, 35, 0.35)); }
-            100% { transform: scale(1); filter: drop-shadow(0 4px 14px rgba(62, 39, 35, 0.2)); }
+            0% { transform: scale(1); filter: drop-shadow(0 4px 14px rgba(62, 39, 35, 0.3)); }
+            50% { transform: scale(1.06); filter: drop-shadow(0 8px 22px rgba(62, 39, 35, 0.45)); }
+            100% { transform: scale(1); filter: drop-shadow(0 4px 14px rgba(62, 39, 35, 0.3)); }
         }
 
         .splash-icon {
@@ -117,30 +117,30 @@
             object-fit: cover;
             animation: iconPulse 1.8s infinite ease-in-out;
             margin-bottom: 22px;
-            box-shadow: 0 6px 20px rgba(62, 39, 35, 0.25);
-            border: 2px solid rgba(62, 39, 35, 0.1);
+            box-shadow: 0 6px 20px rgba(62, 39, 35, 0.35);
+            border: 2px solid rgba(62, 39, 35, 0.15);
         }
 
         .splash-progress-track {
             width: 220px;
             height: 6px;
-            background-color: rgba(62, 39, 35, 0.12);
+            background-color: rgba(62, 39, 35, 0.2);
             border-radius: 4px;
             overflow: hidden;
             margin-bottom: 14px;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
         }
 
         .splash-progress-fill {
             width: 0%;
             height: 100%;
-            background: #3E2723; /* Угольно-коричневый, как карандаш */
+            background: #3E2723;
             border-radius: 4px;
-            transition: width 0.2s ease-out;
+            transition: width 0.15s ease-out;
         }
 
         .splash-percent {
-            color: #5D4037;
+            color: #3E2723;
             font-size: 14px;
             font-weight: 700;
             margin-bottom: 4px;
@@ -148,11 +148,11 @@
         }
 
         .splash-subtext {
-            color: #8D6E63;
+            color: #5D4037;
             font-size: 12px;
             letter-spacing: 1px;
             text-transform: uppercase;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .splash-hidden {
@@ -168,17 +168,17 @@
         <svg class="vector-phone-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="6" y="2" width="12" height="20" rx="2" stroke="#3E2723" stroke-width="1.5"/>
             <circle cx="12" cy="19" r="0.75" fill="#3E2723"/>
-            <path d="M4 16C2.5 13.5 2.5 10.5 4 8" stroke="#8D6E63" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M20 8C21.5 10.5 21.5 13.5 20 16" stroke="#8D6E63" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M2 10L4 8L6 10" stroke="#8D6E63" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M22 14L20 16L18 14" stroke="#8D6E63" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 16C2.5 13.5 2.5 10.5 4 8" stroke="#5D4037" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M20 8C21.5 10.5 21.5 13.5 20 16" stroke="#5D4037" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M2 10L4 8L6 10" stroke="#5D4037" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M22 14L20 16L18 14" stroke="#5D4037" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <div class="rotate-text">Поверните устройство</div>
     </div>
 
     <!-- Экран загрузки -->
     <div id="custom-splash">
-        <img class="splash-icon" src="index.a2f5b.png" alt="Karelian Bath">
+        <img class="splash-icon" src="index.png" alt="Karelian Bath">
         <div class="splash-progress-track">
             <div class="splash-progress-fill" id="splashFill"></div>
         </div>
@@ -193,9 +193,9 @@
         </div>
     </div>
 
-    <script src="src/polyfills.bundle.43263.js" charset="utf-8"></script>
-    <script src="src/system.bundle.543e6.js" charset="utf-8"></script>
-    <script src="src/import-map.315c1.json" type="systemjs-importmap" charset="utf-8"></script>
+    <script src="src/polyfills.bundle.js" charset="utf-8"></script>
+    <script src="src/system.bundle.js" charset="utf-8"></script>
+    <script src="src/import-map.json" type="systemjs-importmap" charset="utf-8"></script>
 
     <script>
         /* =========================================================
@@ -208,70 +208,117 @@
         const splashScreen = document.getElementById('custom-splash');
 
         function updateProgress(value) {
-            if (isGameReady) return;
+            if (isGameReady && value < currentProgress) return;
             currentProgress = Math.min(value, 100);
             fillBar.style.width = currentProgress + '%';
             percentText.textContent = Math.round(currentProgress) + '%';
         }
 
-        // 1. Перехватываем fetch для отслеживания реальной загрузки ассетов/бандлов
+        // 1. Перехватываем fetch
         let networkRequests = 0;
         let completedRequests = 0;
         const originalFetch = window.fetch;
         
-        window.fetch = function(...args) {
+        if (originalFetch) {
+            window.fetch = function(...args) {
+                networkRequests++;
+                return originalFetch.apply(this, args).then(response => {
+                    completedRequests++;
+                    return response;
+                }).catch(err => {
+                    completedRequests++;
+                    throw err;
+                });
+            };
+        }
+
+        // 2. Перехватываем XMLHttpRequest (Cocos грузит бандлы через XHR)
+        const originalXhrOpen = XMLHttpRequest.prototype.open;
+        const originalXhrSend = XMLHttpRequest.prototype.send;
+        
+        XMLHttpRequest.prototype.open = function(method, url) {
+            this._trackUrl = url;
+            return originalXhrOpen.apply(this, arguments);
+        };
+        
+        XMLHttpRequest.prototype.send = function() {
             networkRequests++;
-            return originalFetch.apply(this, args).then(response => {
+            this.addEventListener('loadend', () => {
                 completedRequests++;
-                // Прогресс от сети: от 20% до 85%
-                if (networkRequests > 2) {
-                    const networkProgress = 20 + (completedRequests / Math.max(networkRequests, 10)) * 65;
-                    updateProgress(Math.max(currentProgress, networkProgress));
-                }
-                return response;
-            }).catch(err => {
-                completedRequests++;
-                throw err;
             });
+            return originalXhrSend.apply(this, arguments);
         };
 
-        // 2. Фейковый прогресс для начала (пока движок не начал грузить файлы)
+        // 3. Непрерывный фейковый прогресс, который ползёт до 95%
+        // Это убирает визуальное "зависание" на одном месте
         const progressTimer = setInterval(() => {
-            if (!isGameReady && currentProgress < 20) {
-                updateProgress(currentProgress + 1.5);
+            if (!isGameReady) {
+                if (currentProgress < 20) {
+                    // Быстрый старт
+                    updateProgress(currentProgress + 2);
+                } else if (currentProgress < 60) {
+                    // Средняя скорость
+                    updateProgress(currentProgress + 0.8);
+                } else if (currentProgress < 95) {
+                    // Медленно ползём к 95% и останавливаемся, ждём сигнал готовности
+                    updateProgress(currentProgress + 0.15);
+                }
             }
         }, 100);
 
-        function finishAndHideSplash() {
+        // 4. Обновление прогресса на основе реальной сетевой активности
+        const networkTimer = setInterval(() => {
+            if (!isGameReady && networkRequests > 2) {
+                const networkProgress = 20 + (completedRequests / Math.max(networkRequests, 8)) * 55;
+                if (networkProgress > currentProgress) {
+                    updateProgress(networkProgress);
+                }
+            }
+        }, 150);
+
+        function finishLoading() {
             if (isGameReady) return;
             isGameReady = true;
             clearInterval(progressTimer);
+            clearInterval(networkTimer);
             
-            updateProgress(100);
-            
-            // Ждем 2 кадра, чтобы WebGL успел отрисовать первую сцену на canvas
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    splashScreen.classList.add('splash-hidden');
-                    setTimeout(() => {
-                        if (splashScreen.parentNode) {
-                            splashScreen.parentNode.removeChild(splashScreen);
-                        }
-                    }, 600);
-                });
-            });
+            // Быстро догоняем до 100%
+            const finalInterval = setInterval(() => {
+                currentProgress += 6;
+                if (currentProgress >= 100) {
+                    currentProgress = 100;
+                    updateProgress(100);
+                    clearInterval(finalInterval);
+                    
+                    // Ждём 2 кадра, чтобы WebGL успел отрисовать первый кадр
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            splashScreen.classList.add('splash-hidden');
+                            setTimeout(() => {
+                                if (splashScreen.parentNode) {
+                                    splashScreen.parentNode.removeChild(splashScreen);
+                                }
+                            }, 600);
+                        });
+                    });
+                } else {
+                    updateProgress(currentProgress);
+                }
+            }, 25);
         }
 
-        // 3. Ждем инициализации Cocos Creator
+        // 5. Ждём инициализации Cocos Creator
         function waitForCocos() {
-            if (window.cc && window.cc.game && window.cc.game.EVENT_GAME_INITED) {
-                // Если игра уже инициализировалась (маловероятно, но на всякий случай)
+            if (window.cc && window.cc.game) {
+                // Если уже инициализирован
                 if (window.cc.game._inited) {
-                    finishAndHideSplash();
+                    finishLoading();
                     return;
                 }
-                // Подписываемся на официальное событие готовности движка
-                window.cc.game.once(window.cc.game.EVENT_GAME_INITED, finishAndHideSplash);
+                // Подписываемся на событие готовности
+                if (window.cc.game.EVENT_GAME_INITED) {
+                    window.cc.game.once(window.cc.game.EVENT_GAME_INITED, finishLoading);
+                }
             } else {
                 setTimeout(waitForCocos, 50);
             }
@@ -279,13 +326,12 @@
         waitForCocos();
 
         // Страховка на случай очень медленного интернета (максимум 20 секунд)
-        setTimeout(finishAndHideSplash, 20000);
+        setTimeout(finishLoading, 20000);
 
         // Запуск игры
-        System.import('./index.0e8cc.js').catch(function(err) {
+        System.import('./index.js').catch(function(err) {
             console.error("Ошибка загрузки игры:", err);
-            // При ошибке все равно скрываем сплеш, чтобы пользователь увидел ошибку движка
-            setTimeout(finishAndHideSplash, 1000);
+            setTimeout(finishLoading, 1000);
         });
 
         /* =========================================================
@@ -295,12 +341,10 @@
             const canvas = document.getElementById('GameCanvas');
             if (!canvas) return;
 
-            // Запрет iOS-жестов масштабирования (pinch-zoom)
             document.addEventListener('gesturestart', e => e.preventDefault(), { passive: false });
             document.addEventListener('gesturechange', e => e.preventDefault(), { passive: false });
             document.addEventListener('gestureend', e => e.preventDefault(), { passive: false });
 
-            // Запрет double-tap zoom
             let lastTouchEnd = 0;
             document.addEventListener('touchend', function (e) {
                 const now = Date.now();
@@ -308,12 +352,10 @@
                 lastTouchEnd = now;
             }, { passive: false });
 
-            // Запрет pinch через touchmove
             document.addEventListener('touchmove', function (e) {
                 if (e.touches.length > 1 || (e.scale && e.scale !== 1)) e.preventDefault();
             }, { passive: false });
 
-            // Возврат фокуса canvas при касании
             document.addEventListener('pointerdown', function (e) {
                 if (e.target && e.target.tagName === 'CANVAS') {
                     try { e.target.focus(); } catch (_) {}
@@ -326,7 +368,6 @@
                 }
             }, { passive: true });
 
-            // Защита от выделения текста
             document.addEventListener('selectstart', function (e) {
                 if (e.target && e.target.tagName === 'CANVAS') e.preventDefault();
             });
