@@ -20,9 +20,6 @@
     <link rel="stylesheet" type="text/css" href="style.css"/>
     
     <style>
-        /* =========================================================
-           БАЗОВЫЕ СТИЛИ: КРАФТОВАЯ БУМАГА (ТЕМНЕЕ)
-           ========================================================= */
         html, body {
             margin: 0;
             padding: 0;
@@ -46,9 +43,7 @@
             outline: none;
         }
 
-        /* =========================================================
-           ОВЕРЛЕЙ ПОВОРОТА ЭКРАНА (ВЕРТИКАЛЬНЫЙ РЕЖИМ)
-           ========================================================= */
+        /* Оверлей поворота */
         #orientation-overlay {
             display: none;
             position: fixed;
@@ -89,9 +84,7 @@
             padding: 0 20px;
         }
 
-        /* =========================================================
-           ЭКРАН ЗАГРУЗКИ (SPLASH)
-           ========================================================= */
+        /* Экран загрузки */
         #custom-splash {
             position: fixed;
             inset: 0;
@@ -151,7 +144,6 @@
             color: #5D4037;
             font-size: 12px;
             letter-spacing: 1px;
-            text-transform: uppercase;
             font-weight: 600;
         }
 
@@ -178,7 +170,7 @@
 
     <!-- Экран загрузки -->
     <div id="custom-splash">
-        <img class="splash-icon" src="index.png" alt="Karelian Bath">
+        <img class="splash-icon" src="index.png" alt="Karelian Bath" onerror="this.style.display='none'">
         <div class="splash-progress-track">
             <div class="splash-progress-fill" id="splashFill"></div>
         </div>
@@ -198,9 +190,6 @@
     <script src="src/import-map.json" type="systemjs-importmap" charset="utf-8"></script>
 
     <script>
-        /* =========================================================
-           ЛОГИКА ЗАГРУЗКИ И ОТСЛЕЖИВАНИЯ ПРОГРЕССА
-           ========================================================= */
         let currentProgress = 0;
         let isGameReady = false;
         const fillBar = document.getElementById('splashFill');
@@ -214,73 +203,23 @@
             percentText.textContent = Math.round(currentProgress) + '%';
         }
 
-        // 1. Перехватываем fetch
-        let networkRequests = 0;
-        let completedRequests = 0;
-        const originalFetch = window.fetch;
-        
-        if (originalFetch) {
-            window.fetch = function(...args) {
-                networkRequests++;
-                return originalFetch.apply(this, args).then(response => {
-                    completedRequests++;
-                    return response;
-                }).catch(err => {
-                    completedRequests++;
-                    throw err;
-                });
-            };
-        }
-
-        // 2. Перехватываем XMLHttpRequest (Cocos грузит бандлы через XHR)
-        const originalXhrOpen = XMLHttpRequest.prototype.open;
-        const originalXhrSend = XMLHttpRequest.prototype.send;
-        
-        XMLHttpRequest.prototype.open = function(method, url) {
-            this._trackUrl = url;
-            return originalXhrOpen.apply(this, arguments);
-        };
-        
-        XMLHttpRequest.prototype.send = function() {
-            networkRequests++;
-            this.addEventListener('loadend', () => {
-                completedRequests++;
-            });
-            return originalXhrSend.apply(this, arguments);
-        };
-
-        // 3. Непрерывный фейковый прогресс, который ползёт до 95%
-        // Это убирает визуальное "зависание" на одном месте
+        // Плавный фейковый прогресс до 90%, чтобы не было "зависания"
         const progressTimer = setInterval(() => {
             if (!isGameReady) {
                 if (currentProgress < 20) {
-                    // Быстрый старт
                     updateProgress(currentProgress + 2);
                 } else if (currentProgress < 60) {
-                    // Средняя скорость
                     updateProgress(currentProgress + 0.8);
-                } else if (currentProgress < 95) {
-                    // Медленно ползём к 95% и останавливаемся, ждём сигнал готовности
+                } else if (currentProgress < 90) {
                     updateProgress(currentProgress + 0.15);
                 }
             }
         }, 100);
 
-        // 4. Обновление прогресса на основе реальной сетевой активности
-        const networkTimer = setInterval(() => {
-            if (!isGameReady && networkRequests > 2) {
-                const networkProgress = 20 + (completedRequests / Math.max(networkRequests, 8)) * 55;
-                if (networkProgress > currentProgress) {
-                    updateProgress(networkProgress);
-                }
-            }
-        }, 150);
-
         function finishLoading() {
             if (isGameReady) return;
             isGameReady = true;
             clearInterval(progressTimer);
-            clearInterval(networkTimer);
             
             // Быстро догоняем до 100%
             const finalInterval = setInterval(() => {
@@ -290,7 +229,6 @@
                     updateProgress(100);
                     clearInterval(finalInterval);
                     
-                    // Ждём 2 кадра, чтобы WebGL успел отрисовать первый кадр
                     requestAnimationFrame(() => {
                         requestAnimationFrame(() => {
                             splashScreen.classList.add('splash-hidden');
@@ -307,15 +245,13 @@
             }, 25);
         }
 
-        // 5. Ждём инициализации Cocos Creator
+        // Ждём инициализации Cocos Creator
         function waitForCocos() {
             if (window.cc && window.cc.game) {
-                // Если уже инициализирован
                 if (window.cc.game._inited) {
                     finishLoading();
                     return;
                 }
-                // Подписываемся на событие готовности
                 if (window.cc.game.EVENT_GAME_INITED) {
                     window.cc.game.once(window.cc.game.EVENT_GAME_INITED, finishLoading);
                 }
@@ -325,7 +261,7 @@
         }
         waitForCocos();
 
-        // Страховка на случай очень медленного интернета (максимум 20 секунд)
+        // Страховка
         setTimeout(finishLoading, 20000);
 
         // Запуск игры
@@ -334,9 +270,7 @@
             setTimeout(finishLoading, 1000);
         });
 
-        /* =========================================================
-           iOS/ANDROID TOUCH FIX И ЗАЩИТА CANVAS
-           ========================================================= */
+        // Защита тач-жестов
         (function () {
             const canvas = document.getElementById('GameCanvas');
             if (!canvas) return;
